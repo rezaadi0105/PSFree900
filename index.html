@@ -1,0 +1,47 @@
+<!-- Copyright (C) 2023-2025 anonymous
+
+This file is part of PSFree.
+
+PSFree is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
+
+PSFree is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with this program.  If not, see <https://www.gnu.org/licenses/>.
+-->
+<html>
+<head>
+<title>PSFree-Lapse For PS4 7.00-9.60 By Reza AP</title>
+<link rel="shortcut icon" href="favicon.ico"></link>
+<link rel="stylesheet" href="style.css">
+<style>
+body{background: linear-gradient(to bottom right, #011A27, #0B2430);color:white;font-size:28px;text-align:center;margin:0;overflow:hidden;}
+.info{position:relative;top:39%;}
+</style>
+
+<!-- Cache -->
+<script>
+if (window.applicationCache.status=='0'){window.location.replace("cache.html");}
+</script>
+</head>
+
+<body onload="setTimeout(webkitExploit,1500);"><!--  -->
+  <!-- Message -->
+  <div id="msgs" class="info">Running Webkit Exploit, Please Wait ...</div>
+
+</body>
+
+<!-- Exploit -->
+<script>
+async function webkitExploit() 
+{
+ await import('./alert.mjs');
+}
+</script>
+</html>
