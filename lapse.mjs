@@ -229,6 +229,7 @@ function call_nze(...args) {
 }
 
 function allset() {
+  localStorage.passcount = ++localStorage.passcount;window.passCounter.innerHTML=localStorage.passcount;
   msgs.innerHTML="PS4 Exploited And Payload Loaded.";
 }
 
